@@ -1,0 +1,45 @@
+ # Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Credentials and secrets - NEVER commit these
+.env
+*.json
+!dbt/profiles_template.json
+
+# Kaggle
+kaggle.json
+
+# Data files - too large for Git
+data/raw/
+data/temp/
+*.csv
+*.parquet
+*.zip
+
+# dbt
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+
+# Great Expectations
+great_expectations/uncommitted/
+
+# Logs
+logs/
+*.log
+
+# VS Code
+.vscode/
+
+# Windows
+Thumbs.db
+Desktop.inipip list
