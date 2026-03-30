@@ -63,6 +63,7 @@ PyJWT==2.12.1
 pyOpenSSL==26.0.0
 pyparsing==3.3.2
 python-dateutil==2.9.0.post0
+python-dotenv==1.2.2
 python-slugify==8.0.4
 pytimeparse==1.1.8
 pytz==2026.1.post1
