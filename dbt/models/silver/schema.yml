@@ -1,0 +1,138 @@
+version: 2
+
+models:
+  - name: silver_orders
+    description: "Cleaned orders table with typed timestamps and derived delivery metrics"
+    columns:
+      - name: ORDER_ID
+        description: "Unique order identifier"
+        tests:
+          - not_null
+          - unique
+      - name: CUSTOMER_ID
+        description: "Foreign key to silver_customers"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_customers')
+              field: CUSTOMER_ID
+      - name: order_status
+        description: "Current status of the order"
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                [
+                  "delivered",
+                  "shipped",
+                  "canceled",
+                  "unavailable",
+                  "invoiced",
+                  "processing",
+                  "created",
+                  "approved",
+                ]
+      - name: order_purchase_timestamp
+        tests:
+          - not_null
+
+  - name: silver_customers
+    description: "Cleaned customers table with standardised city and state"
+    columns:
+      - name: CUSTOMER_ID
+        description: "Unique customer identifier"
+        tests:
+          - not_null
+          - unique
+      - name: CUSTOMER_UNIQUE_ID
+        tests:
+          - not_null
+      - name: customer_state
+        tests:
+          - not_null
+
+  - name: silver_order_items
+    description: "Cleaned order items with typed prices and derived total value"
+    columns:
+      - name: ORDER_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_orders')
+              field: ORDER_ID
+      - name: PRODUCT_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_products')
+              field: PRODUCT_ID
+      - name: SELLER_ID
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_sellers')
+              field: SELLER_ID
+      - name: price
+        tests:
+          - not_null
+
+  - name: silver_order_payments
+    description: "Cleaned payments with typed values and standardised payment types"
+    columns:
+      - name: ORDER_ID
+        tests:
+          - not_null
+      - name: payment_type
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                [
+                  "credit_card",
+                  "boleto",
+                  "voucher",
+                  "debit_card",
+                  "not_defined",
+                ]
+      - name: payment_value
+        tests:
+          - not_null
+
+  - name: silver_order_reviews
+    description: "Cleaned reviews with typed scores and timestamps"
+    columns:
+      - name: REVIEW_ID
+        tests:
+          - not_null
+      - name: ORDER_ID
+        tests:
+          - not_null
+      - name: review_score
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+
+  - name: silver_products
+    description: "Cleaned products with typed numeric dimensions"
+    columns:
+      - name: PRODUCT_ID
+        tests:
+          - not_null
+          - unique
+
+  - name: silver_sellers
+    description: "Cleaned sellers with standardised location fields"
+    columns:
+      - name: SELLER_ID
+        tests:
+          - not_null
+          - unique
+
+  - name: silver_product_category_translation
+    description: "Portuguese to English product category name mapping"
+    columns:
+      - name: product_category_name
+        tests:
+          - not_null
+          - unique

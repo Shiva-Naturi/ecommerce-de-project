@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: ECOMMERCE_DB
+    schema: BRONZE
+    tables:
+      - name: ORDERS
+      - name: ORDER_ITEMS
+      - name: ORDER_PAYMENTS
+      - name: ORDER_REVIEWS
+      - name: CUSTOMERS
+      - name: PRODUCTS
+      - name: SELLERS
+      - name: GEOLOCATION
+      - name: PRODUCT_CATEGORY_TRANSLATION
