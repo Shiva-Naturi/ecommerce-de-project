@@ -1,0 +1,55 @@
+name: dbt CI — run tests on push to main
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  dbt-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install dbt-core dbt-snowflake
+
+      - name: Create profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << EOF
+          ecommerce_de:
+            target: dev
+            outputs:
+              dev:
+                type: snowflake
+                account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+                user: ${{ secrets.SNOWFLAKE_USER }}
+                password: ${{ secrets.SNOWFLAKE_PASSWORD }}
+                role: ACCOUNTADMIN
+                warehouse: COMPUTE_WH
+                database: ECOMMERCE_DB
+                schema: BRONZE
+                threads: 4
+                client_session_keep_alive: false
+          EOF
+
+      - name: Run dbt debug
+        run: |
+          dbt debug \
+            --profiles-dir ~/.dbt \
+            --project-dir dbt
+
+      - name: Run dbt test
+        run: |
+          dbt test \
+            --profiles-dir ~/.dbt \
+            --project-dir dbt
